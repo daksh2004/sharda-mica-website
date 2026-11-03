@@ -74,7 +74,7 @@ Public routes include `/`, `/products`, `/kitchen-hardware`, `/cart`, `/contact`
 - Contact details are saved only when the visitor gives consent. WhatsApp opens a draft for the visitor to check and send.
 - Saved enquiries, their review status, and admin-added product records use SQL. Shared production use therefore needs a persistent hosted PostgreSQL service; local PGlite data is not shared or persistent production storage.
 - Product image uploads need a persistent hosted image-storage provider in production. Store image references in the database, not image file bodies.
-- A 90-day automatic enquiry purge is a required production setup item and must be implemented/configured with a scheduled cleanup before launch. Do not assume the current inbox automatically deletes old enquiries.
+- Enquiries are retained for 30 days. The `enquiries:purge` job has a safe dry-run by default; add `--apply` only for the scheduled Render Cron Job. This repository cannot run scheduled cleanup until that Cron Job is configured in Render.
 
 ## Checks
 
@@ -98,7 +98,7 @@ The production build runs the Agent-Native doctor as part of its build command. 
 3. The verified admin email in `SHARDA_ADMIN_EMAIL`.
 4. Managed image storage for admin-uploaded product photographs.
 5. A verified email sender if admin password-reset links are required.
-6. A scheduled job that deletes enquiries older than 90 days, with its schedule verified in the selected host.
+6. A Render Cron Job that runs `pnpm run enquiries:purge -- --apply` against the same `DATABASE_URL` as the website. Schedule it daily or weekly and verify its first run in Render logs. The job deletes only enquiries older than 30 days; without the Cron Job, automatic deletion is not active.
 7. A GitHub repository connected to the hosting project and a successful production build/migration.
 
 Deployment, DNS changes, publication and Google Search Console or Google Business Profile connections require the owner's approval. Use the verified business name, address, phone numbers and real domain; do not invent verification or business claims.
@@ -108,5 +108,5 @@ Deployment, DNS changes, publication and Google Search Console or Google Busines
 - Keep `.env`, database files, uploaded customer information and local build output out of Git.
 - Keep admin authentication enabled on any public deployment.
 - Do not log customer form contents or credentials.
-- Collect and store contact details only after consent, and apply the configured 90-day deletion policy before launch.
+- Collect and store contact details only after consent, and verify the 30-day scheduled deletion job before launch.
 - Review the privacy policy and terms against the final hosting and data-retention setup before publishing.

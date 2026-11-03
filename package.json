@@ -15,6 +15,7 @@
     "test": "vitest --run --passWithNoTests",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "enquiries:purge": "tsx scripts/purge-store-enquiries.ts",
     "agent-native:doctor": "agent-native doctor"
   },
   "dependencies": {
