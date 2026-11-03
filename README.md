@@ -74,7 +74,7 @@ Public routes include `/`, `/products`, `/kitchen-hardware`, `/cart`, `/contact`
 - Contact details are saved only when the visitor gives consent. WhatsApp opens a draft for the visitor to check and send.
 - Saved enquiries, their review status, and admin-added product records use SQL. Shared production use therefore needs a persistent hosted PostgreSQL service; local PGlite data is not shared or persistent production storage.
 - Product image uploads need a persistent hosted image-storage provider in production. Store image references in the database, not image file bodies.
-- Enquiries are retained for 30 days. The `enquiries:purge` job has a safe dry-run by default; add `--apply` only for the scheduled Render Cron Job. This repository cannot run scheduled cleanup until that Cron Job is configured in Render.
+- Enquiries are retained for 30 days. The `enquiries:purge` job has a safe dry-run by default; the scheduled GitHub Actions workflow needs the hosted database URL configured as a repository secret before automatic cleanup is active.
 
 ## Checks
 
@@ -89,19 +89,63 @@ corepack pnpm build
 
 The production build runs the Agent-Native doctor as part of its build command. A successful local build alone does not confirm that production secrets, the hosted database, image storage, email delivery or the deployed domain are configured.
 
-## Deployment
+## Deployment on Render
 
-`netlify.toml` contains Netlify build configuration. Before connecting or publishing a production site, configure the real site domain and production environment variables in the hosting dashboard, including:
+This is a React Router and Nitro Node.js server app, so deploy it as a **Render Web Service**, not a Static Site. The Git remote is `https://github.com/daksh2004/sharda-mica-website.git` on `main`.
 
-1. A persistent hosted PostgreSQL URL (`NETLIFY_DATABASE_URL` or `DATABASE_URL`).
-2. A stable `BETTER_AUTH_SECRET` and the real origin in `BETTER_AUTH_TRUSTED_ORIGINS`.
-3. The verified admin email in `SHARDA_ADMIN_EMAIL`.
-4. Managed image storage for admin-uploaded product photographs.
-5. A verified email sender if admin password-reset links are required.
-6. A Render Cron Job that runs `pnpm run enquiries:purge -- --apply` against the same `DATABASE_URL` as the website. Schedule it daily or weekly and verify its first run in Render logs. The job deletes only enquiries older than 30 days; without the Cron Job, automatic deletion is not active.
-7. A GitHub repository connected to the hosting project and a successful production build/migration.
+1. In Render, create **New > Web Service**, connect GitHub, and choose this repository and the `main` branch. Leave Root Directory blank when the repository root is this project.
+2. Set Node.js to `22.22.0` (or newer compatible Node 22) and enter:
 
-Deployment, DNS changes, publication and Google Search Console or Google Business Profile connections require the owner's approval. Use the verified business name, address, phone numbers and real domain; do not invent verification or business claims.
+   - Build: `npm install -g pnpm && pnpm install --frozen-lockfile && pnpm build`
+   - Start: `pnpm start`
+
+3. Set the required private environment values in Render. Never commit real values to this repository:
+
+   - `DATABASE_URL`: pooled connection URL from the persistent hosted PostgreSQL provider (Neon is supported).
+   - `DATABASE_URL_UNPOOLED`: the same database's direct/unpooled connection URL, used for Drizzle migrations.
+   - `BETTER_AUTH_SECRET`: newly generated random secret of at least 32 bytes.
+   - `SHARDA_ADMIN_EMAIL`: `shardamica@gmail.com` (the verified owner email).
+   - `BETTER_AUTH_TRUSTED_ORIGINS`: exact production origins, comma-separated if there is more than one; do not use `*`.
+   - Email recovery: `RESEND_API_KEY` with its verified sender setup, or `SENDGRID_API_KEY` plus `EMAIL_FROM` set to a verified sender.
+   - Keep `AUTH_DISABLED` unset. Do not put credentials in client-side React variables.
+
+4. For a paid Render Web Service, set the Pre-Deploy Command to `pnpm migrate:production`. It runs the Agent-Native and Drizzle migrations before new code starts. Render does not offer pre-deploy commands on Free web services. Before the first Free deploy, or before pushing a schema-changing update, stop the local dev server and run the production migration from this project folder against Neon. Enter the connection strings at the hidden prompts; do not put them in a command or commit them:
+
+   ```powershell
+   function Set-SecretEnv([string]$Name) {
+     $secure = Read-Host -Prompt $Name -AsSecureString
+     $pointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
+     try {
+       Set-Item -Path "Env:$Name" -Value ([Runtime.InteropServices.Marshal]::PtrToStringBSTR($pointer))
+     } finally {
+       [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($pointer)
+     }
+   }
+   Set-SecretEnv "DATABASE_URL"
+   Set-SecretEnv "DATABASE_URL_UNPOOLED"
+   pnpm migrate:production
+   $migrationExitCode = $LASTEXITCODE
+   Remove-Item Env:DATABASE_URL, Env:DATABASE_URL_UNPOOLED
+   if ($migrationExitCode -ne 0) { throw "Production migration failed; do not deploy until resolved." }
+   ```
+
+   Do not run `db:push` against production. Wait for the migration command to finish successfully before starting a deploy.
+5. Configure product image uploads with a durable S3-compatible provider such as Cloudflare R2. The framework upload setup requires bucket credentials and a public URL; local disk uploads are not durable on Render. Save those values only in the app's secured file-storage settings or the hosting secret store.
+6. Set Render's health check path to `/` and confirm the server starts using Render's `PORT` (Nitro reads `PORT` automatically). Check the deployment logs and verify public pages, `/admin` sign-in, image upload, saved enquiry, and email reset before sharing the service URL.
+7. Add GitHub Actions repository secret `DATABASE_URL` for the scheduled retention workflow. `.github/workflows/purge-enquiries.yml` runs daily and deletes only enquiries older than 30 days. Run it once manually after adding the secret and verify its Actions log. This lets the cleanup run even if a Free Render service is asleep.
+8. Connect Render to the GitHub `main` branch and enable Auto-Deploy after checks. `.github/workflows/ci.yml` runs typecheck, tests, the framework doctor and production build on pushes and pull requests. It uses fake build-only database/auth values, not production secrets. Commit and push changes to deploy them:
+
+   ```powershell
+   git add .
+   git commit -m "Describe the change"
+   git push origin main
+   ```
+
+9. For traffic controls, put Cloudflare in front of the custom domain after the domain is registered and DNS is ready. Enable appropriate bot/rate rules conservatively; cache static assets only, and bypass cache for admin, auth, action/API and enquiry routes. Cloudflare does not keep Render awake. Set UptimeRobot to check the public Render URL every 5 minutes and email on failure.
+
+**Availability note:** Render Free web services sleep after 15 idle minutes, take about a minute to wake, use ephemeral files, and have monthly usage caps. Render says Free instances are intended for testing/hobby use, not production. A reliable always-on business website needs an always-on paid web service and durable hosted PostgreSQL and image storage. Do not use a one-second ping loop to evade idle behavior.
+
+The custom domain and Google Search Console/Business Profile setup should use the final domain and verified business details. Do not invent business details or verification. Review the privacy policy and terms for the hosted data-retention and email setup before launch.
 
 ## Security and privacy notes
 
