@@ -19,6 +19,10 @@ import { TAB_ID } from "@/lib/tab-id";
 import stylesheet from "./global.css?url";
 
 configureTracking({
+  // The public storefront does not need private agent-engine or auth-session
+  // status probes. Avoid sending anonymous visitors to protected endpoints.
+  llmConnectionStatus: false,
+  authSessionRefresh: false,
   getDefaultProps: (_name, properties) => ({
     ...properties,
     app: APP_NAME,
@@ -72,7 +76,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-function DbSyncSetup() {
+function AdminSyncSetup() {
   const qc = useQueryClient();
   useNavigationState();
   useDbSync({ queryClient: qc, ignoreSource: TAB_ID });
@@ -81,13 +85,14 @@ function DbSyncSetup() {
 
 export default function Root() {
   const { pathname } = useLocation();
-  const isPublicPath = pathname !== "/admin" && !pathname.startsWith("/admin/");
+  const isAdminPath = pathname === "/admin" || pathname.startsWith("/admin/");
+  const isPublicPath = !isAdminPath;
   const [queryClient] = useState(() => createAgentNativeQueryClient());
   return (
     <AppToolkitProvider>
       <AppProviders queryClient={queryClient} isPublicPath={isPublicPath}>
         <ClientOnly>
-          <DbSyncSetup />
+          {isAdminPath ? <AdminSyncSetup /> : null}
         </ClientOnly>
         <AppLayout>
           <Outlet />

@@ -247,6 +247,13 @@ const adminPasswordPolicy: BetterAuthPlugin = {
 export default createAuthPlugin({
   rootAuth: false,
   loginHtml: authPage,
+  // The storefront is public, so its catalog read and customer enquiry submit
+  // actions must be callable without an admin session. Keep this list explicit:
+  // inbox and product-management actions remain protected by authentication.
+  publicPaths: [
+    "/_agent-native/actions/list-store-products",
+    "/_agent-native/actions/create-store-enquiry",
+  ],
   workspaceAppPublicPaths: [
     "/",
     "/products",
