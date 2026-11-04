@@ -266,8 +266,15 @@
 }
 
 @layer base {
+  html {
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
   body {
     @apply bg-background text-foreground;
+    max-width: 100%;
+    overflow-x: clip;
     font-family: "Inter Variable", "Inter", sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }

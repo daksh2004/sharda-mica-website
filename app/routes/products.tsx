@@ -51,19 +51,19 @@ export default function ProductsPage() {
     else setParams({ category: value });
   }
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
+    <div className="mx-auto w-full min-w-0 max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
       <nav className="mb-6 text-xs text-[#77786f]">
         <Link to="/" className="hover:underline">
           Home
         </Link>
         <span className="px-2">/</span>Products
       </nav>
-      <div className="flex flex-wrap items-end justify-between gap-5 border-b border-[#e6dfd0] pb-7">
-        <div>
+      <div className="grid min-w-0 gap-4 border-b border-[#e6dfd0] pb-7 sm:flex sm:flex-wrap sm:items-end sm:justify-between sm:gap-5">
+        <div className="w-full min-w-0 sm:flex-1">
           <p className="text-xs font-bold uppercase tracking-[.16em] text-[#745a32]">
             Browse materials
           </p>
-          <h1 className="mt-2 font-serif text-3xl font-semibold text-[#34452e] sm:text-4xl">
+          <h1 className="mt-2 max-w-full break-words font-serif text-3xl font-semibold text-[#34452e] sm:text-4xl">
             Explore Our Product Collection
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-[#62635c]">
@@ -73,13 +73,13 @@ export default function ProductsPage() {
         </div>
         <Link
           to="/cart"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-[#34452e] underline underline-offset-4"
+          className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-[#34452e] underline underline-offset-4"
         >
           <IconShoppingBag size={18} /> Enquiry cart ({cart.count})
         </Link>
       </div>
-      <div className="mt-7 grid gap-8 lg:grid-cols-[230px_1fr]">
-        <aside>
+      <div className="mt-7 grid min-w-0 gap-8 lg:grid-cols-[230px_minmax(0,1fr)]">
+        <aside className="min-w-0">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold text-[#34452e]">Categories</h2>
             <button
@@ -92,7 +92,7 @@ export default function ProductsPage() {
               Clear filters
             </button>
           </div>
-          <div className="mt-3 flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible">
+          <div className="mt-3 flex min-w-0 max-w-full gap-2 overflow-x-auto overscroll-x-contain pb-2 lg:flex-col lg:overflow-visible">
             {["All Products", ...categories].map((c) => (
               <button
                 key={c}
@@ -104,7 +104,7 @@ export default function ProductsPage() {
             ))}
           </div>
         </aside>
-        <div>
+        <div className="min-w-0">
           <div className="flex flex-col gap-3 sm:flex-row">
             <label className="relative flex-1">
               <IconSearch
@@ -141,14 +141,14 @@ export default function ProductsPage() {
               </Link>
             </div>
           )}
-          <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-5 grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {visible.map((p) => (
               <article
                 key={p.id}
-                className="flex flex-col border border-[#e4dfd2] bg-white"
+                className="flex min-w-0 flex-col border border-[#e4dfd2] bg-white"
               >
                 <ProductPhotoViewer photos={p.photos} name={p.name} />
-                <div className="flex flex-1 flex-col p-4">
+                <div className="flex min-w-0 flex-1 flex-col p-4">
                   <span className="text-[10px] font-bold uppercase tracking-[.14em] text-[#8a704a]">
                     {p.category}
                   </span>
@@ -167,7 +167,7 @@ export default function ProductsPage() {
                       className="mt-1 w-full border border-[#ddd7ca] px-3 py-2 text-sm font-normal outline-none focus:border-[#78945a]"
                     />
                   </label>
-                  <div className="mt-4 flex items-center justify-between border-t border-[#eee9de] pt-3">
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-t border-[#eee9de] pt-3">
                     <span className="text-sm font-semibold text-[#745a32]">
                       Price on Request
                     </span>

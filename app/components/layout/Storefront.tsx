@@ -39,15 +39,15 @@ function StorefrontFrame({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   useEffect(() => setMobileOpen(false), [location.pathname]);
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-[#fffdf5] text-[#292b25]">
+    <div className="min-h-screen min-h-[100dvh] w-full min-w-0 overflow-x-clip bg-[#fffdf5] text-[#292b25]">
       <div className="bg-[#34452e] px-4 py-2 text-center text-xs text-white sm:text-left">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-5 gap-y-1 sm:justify-between">
+        <div className="mx-auto flex w-full min-w-0 max-w-7xl flex-col items-center justify-center gap-x-5 gap-y-1 sm:flex-row sm:flex-wrap sm:justify-between">
           <span>Serving Jabalpur for 30+ years</span>
-          <span className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
-            <a href="tel:+919424312979" className="hover:underline">
+          <span className="flex w-full min-w-0 max-w-full flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:w-auto">
+            <a href="tel:+919424312979" className="max-w-full break-words hover:underline">
               Mobile: {STORE.mobile}
             </a>
-            <a href="tel:+919039012979" className="hover:underline">
+            <a href="tel:+919039012979" className="max-w-full break-words hover:underline">
               Additional mobile: {STORE.alternateMobile}
             </a>
             <a
