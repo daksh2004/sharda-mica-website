@@ -47,11 +47,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Run production build and framework doctor
+        run: pnpm build
+
+      # The build generates ignored React Router virtual types and the
+      # Agent-Native action registry. Generate them before TypeScript and tests
+      # so a fresh GitHub runner has the same generated inputs as local dev.
       - name: Typecheck
         run: pnpm typecheck
 
       - name: Run tests
         run: pnpm test
-
-      - name: Run production build and framework doctor
-        run: pnpm build

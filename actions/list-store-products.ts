@@ -8,6 +8,7 @@ import { getDb, schema } from "../server/db.js";
 export default defineAction({
   description:
     "List added store products and active built-in product IDs for the public catalog.",
+  requiresAuth: false,
   schema: z.object({}),
   http: { method: "GET" },
   run: async () => {

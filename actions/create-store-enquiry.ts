@@ -5,6 +5,7 @@ import { z } from "zod";
 export default defineAction({
   description: "Save a website contact form submission, product enquiry, or WhatsApp handoff request in the store inbox.",
   agentTool: false,
+  requiresAuth: false,
   schema: z
     .object({
       source: z.enum(["contact", "product", "cart"]).describe("Where this enquiry started"),
