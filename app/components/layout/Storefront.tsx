@@ -39,7 +39,7 @@ function StorefrontFrame({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   useEffect(() => setMobileOpen(false), [location.pathname]);
   return (
-    <div className="min-h-screen bg-[#fffdf5] text-[#292b25]">
+    <div className="min-h-screen min-h-[100dvh] bg-[#fffdf5] text-[#292b25]">
       <div className="bg-[#34452e] px-4 py-2 text-center text-xs text-white sm:text-left">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-5 gap-y-1 sm:justify-between">
           <span>Serving Jabalpur for 30+ years</span>
@@ -263,7 +263,7 @@ function AssistantWidget() {
     <>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-4 right-4 z-40 flex items-center gap-2 rounded-full bg-[#34452e] px-4 py-3 text-sm font-semibold text-white shadow-lg hover:bg-[#263421] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c8a779]"
+        className="storefront-assistant-trigger fixed z-40 flex items-center gap-2 rounded-full bg-[#34452e] px-4 py-3 text-sm font-semibold text-white shadow-lg hover:bg-[#263421] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#c8a779]"
         aria-expanded={open}
         aria-controls="sharda-assistant"
       >
@@ -276,7 +276,7 @@ function AssistantWidget() {
           id="sharda-assistant"
           role="dialog"
           aria-label="Sharda Assistant"
-          className="fixed inset-x-3 bottom-[4.7rem] z-40 flex max-h-[70dvh] flex-col overflow-hidden rounded-xl border border-[#d9d1bf] bg-[#fffdf5] shadow-2xl sm:inset-x-auto sm:right-4 sm:w-[370px]"
+          className="storefront-assistant-panel fixed z-40 flex max-h-[70dvh] flex-col overflow-hidden rounded-xl border border-[#d9d1bf] bg-[#fffdf5] shadow-2xl"
         >
           <div className="flex items-center justify-between bg-[#34452e] px-4 py-3 text-white">
             <div>

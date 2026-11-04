@@ -55,6 +55,25 @@
   --chat-sidebar-title-fade: 1.25rem;
 }
 
+.storefront-assistant-trigger {
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+.storefront-assistant-panel {
+  right: max(0.75rem, env(safe-area-inset-right));
+  bottom: calc(max(1rem, env(safe-area-inset-bottom)) + 3.7rem);
+  left: max(0.75rem, env(safe-area-inset-left));
+  width: min(370px, calc(100vw - 1.5rem));
+}
+
+@media (min-width: 640px) {
+  .storefront-assistant-panel {
+    right: max(1rem, env(safe-area-inset-right));
+    left: auto;
+  }
+}
+
 .chat-layout-shell {
   --agent-layout-left-drawer-expanded-width: var(--chat-sidebar-width);
   --agent-native-lower-surface: var(--agent-kit-nav-surface);
