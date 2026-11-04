@@ -149,7 +149,7 @@ const authPage = `<!doctype html>
             if (!response.ok || result.error || result.ok === false) {
               const message = result.message || result.error || "";
               if (message === "We couldn't sign you in right now. Please try again." || message === "We couldn't create your account right now. Please try again.") {
-                throw new Error("The server could not access the account database. Check the VS Code terminal. If it says the PGlite database is already owned by another process, stop the other dev server terminals and run only one server from the Website folder.");
+                throw new Error("The live server could not complete this authentication request. Check the Render service logs for the authentication or database error, then try again.");
               }
               throw new Error(message || "The request failed. Check that one dev server is running from the Website folder.");
             }
