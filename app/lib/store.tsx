@@ -31,6 +31,13 @@ export type Product = {
   requiresQuote: true;
   photos: ProductPhoto[];
 };
+type AddedStoreProduct = {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  imageUrl: string;
+};
 
 const product = (
   id: string,
@@ -502,7 +509,7 @@ export function useCatalogProducts() {
       ...products.filter(
         (item) => !activeCatalogIds || activeCatalogIds.has(item.id),
       ),
-      ...(catalogData?.addedProducts ?? []).map((item) => ({
+      ...(catalogData?.addedProducts ?? []).map((item: AddedStoreProduct) => ({
         id: item.id,
         name: item.name,
         category: ([

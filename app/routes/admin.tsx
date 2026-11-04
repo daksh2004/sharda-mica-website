@@ -527,7 +527,7 @@ export default function AdminPage() {
             {enquiryRows.length > 0 && (
               <>
                 <div className="mt-5 space-y-3">
-                  {enquiryRows.map((enquiry) => (
+                  {enquiryRows.map((enquiry: EnquiryPdfRecord) => (
                     <article key={enquiry.id} className="border border-[#e6e1d5] bg-white p-4 sm:p-5">
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
