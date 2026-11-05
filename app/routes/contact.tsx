@@ -122,7 +122,7 @@ export default function ContactPage() {
                 <h2 className="text-sm font-semibold text-[#34452e]">Email</h2>
                 <a
                   className="mt-1 block text-sm text-[#55574f] underline underline-offset-2"
-                  href="mailto:shardamica@gmail.com"
+                  href="mailto:shardamicapalace@gmail.com"
                 >
                   {STORE.email}
                 </a>

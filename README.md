@@ -104,7 +104,7 @@ This is a React Router and Nitro Node.js server app, so deploy it as a **Render 
    - `DATABASE_URL`: pooled connection URL from the persistent hosted PostgreSQL provider (Neon is supported).
    - `DATABASE_URL_UNPOOLED`: the same database's direct/unpooled connection URL, used for Drizzle migrations.
    - `BETTER_AUTH_SECRET`: newly generated random secret of at least 32 bytes.
-   - `SHARDA_ADMIN_EMAIL`: `shardamica@gmail.com` (the verified owner email).
+   - `SHARDA_ADMIN_EMAIL`: `shardamicapalace@gmail.com` (the owner/admin email; verify this mailbox for sign-in).
    - `BETTER_AUTH_TRUSTED_ORIGINS`: exact production origins, comma-separated if there is more than one; do not use `*`.
    - Email recovery: `RESEND_API_KEY` with its verified sender setup, or `SENDGRID_API_KEY` plus `EMAIL_FROM` set to a verified sender.
    - Keep `AUTH_DISABLED` unset. Do not put credentials in client-side React variables.

@@ -538,7 +538,7 @@ export const STORE = {
   phone: "0761-4921170",
   mobile: "+91 94243 12979",
   alternateMobile: "+91 90390 12979",
-  email: "shardamica@gmail.com",
+  email: "shardamicapalace@gmail.com",
   whatsapp: "919424312979",
 } as const;
 

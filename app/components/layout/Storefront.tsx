@@ -51,10 +51,10 @@ function StorefrontFrame({ children }: { children: React.ReactNode }) {
               Additional mobile: {STORE.alternateMobile}
             </a>
             <a
-              href="mailto:shardamica@gmail.com"
+              href="mailto:shardamicapalace@gmail.com"
               className="hidden hover:underline sm:inline"
             >
-              shardamica@gmail.com
+              shardamicapalace@gmail.com
             </a>
           </span>
         </div>
@@ -198,7 +198,7 @@ function StorefrontFrame({ children }: { children: React.ReactNode }) {
             </a>
             <a
               className="mt-1 block text-sm text-white/90"
-              href="mailto:shardamica@gmail.com"
+              href="mailto:shardamicapalace@gmail.com"
             >
               {STORE.email}
             </a>
