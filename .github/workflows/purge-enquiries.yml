@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL || vars.DATABASE_URL }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -33,14 +33,19 @@ jobs:
           run_install: false
 
       - name: Check database secret is configured
+        id: database_config
         run: |
           if [ -z "$DATABASE_URL" ]; then
-            echo "::error::Add DATABASE_URL as a GitHub Actions secret before running this workflow."
-            exit 1
+            echo "::warning::Skipping purge because DATABASE_URL is not configured. Add it as a repository secret (preferred) or variable."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
 
       - name: Install dependencies
+        if: steps.database_config.outputs.skip != 'true'
         run: pnpm install --frozen-lockfile
 
       - name: Delete enquiries older than 30 days
+        if: steps.database_config.outputs.skip != 'true'
         run: pnpm run enquiries:purge -- --apply
