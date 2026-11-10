@@ -47,32 +47,36 @@ const THEME_INIT_SCRIPT = getThemeInitScript();
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, viewport-fit=cover"
-        />
-        <script
-          suppressHydrationWarning
-          dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
-        />
-        <meta name="theme-color" content="#34452e" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content={APP_TITLE} />
-        <link rel="icon" type="image/png" href={appPath("/brand/sharda-mica-palace-logo.png")} />
-        <link rel="apple-touch-icon" href={appPath("/icon-180.svg")} />
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
-      </body>
-    </html>
+   <html lang="en" suppressHydrationWarning>
+  <head>
+    <meta charSet="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <script
+      suppressHydrationWarning
+      dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
+    />
+    
+    {/* Google Search Console Verification Tag */}
+    <meta name="google-site-verification" content="nE7S7JaTGR6mSpqgxj9Fdk5AoBOfNJfD-IacNcLOV7g" />
+    
+    <meta name="theme-color" content="#34452e" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content={APP_TITLE} />
+    <link rel="icon" type="image/png" href={appPath("/brand/sharda-mica-palace-logo.png")} />
+    <link rel="apple-touch-icon" href={appPath("/icon-180.svg")} />
+    <Meta />
+    <Links />
+  </head>
+  <body>
+    {children}
+    <ScrollRestoration />
+    <Scripts />
+  </body>
+</html>
   );
 }
 
