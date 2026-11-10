@@ -74,7 +74,7 @@ Public routes include `/`, `/products`, `/kitchen-hardware`, `/cart`, `/contact`
 - Contact details are saved only when the visitor gives consent. WhatsApp opens a draft for the visitor to check and send.
 - Saved enquiries, their review status, and admin-added product records use SQL. Shared production use therefore needs a persistent hosted PostgreSQL service; local PGlite data is not shared or persistent production storage.
 - Product image uploads need a persistent hosted image-storage provider in production. Store image references in the database, not image file bodies.
-- Enquiries are retained for 30 days. The `enquiries:purge` job has a safe dry-run by default; the scheduled GitHub Actions workflow needs the hosted database URL configured as a repository secret before automatic cleanup is active.
+- Enquiries are retained for 30 days. The `enquiries:purge` job has a safe dry-run by default; the scheduled GitHub Actions workflow reads `DATABASE_URL` from a repository secret (preferred) or repository variable and skips cleanup with a warning when neither is configured.
 
 ## Checks
 
@@ -132,7 +132,7 @@ This is a React Router and Nitro Node.js server app, so deploy it as a **Render 
    Do not run `db:push` against production. Wait for the migration command to finish successfully before starting a deploy.
 5. Configure product image uploads with a durable S3-compatible provider such as Cloudflare R2. The framework upload setup requires bucket credentials and a public URL; local disk uploads are not durable on Render. Save those values only in the app's secured file-storage settings or the hosting secret store.
 6. Set Render's health check path to `/` and confirm the server starts using Render's `PORT` (Nitro reads `PORT` automatically). Check the deployment logs and verify public pages, `/admin` sign-in, image upload, saved enquiry, and email reset before sharing the service URL.
-7. Add GitHub Actions repository secret `DATABASE_URL` for the scheduled retention workflow. `.github/workflows/purge-enquiries.yml` runs daily and deletes only enquiries older than 30 days. Run it once manually after adding the secret and verify its Actions log. This lets the cleanup run even if a Free Render service is asleep.
+7. Add GitHub Actions `DATABASE_URL` to repository secrets (preferred) or repository variables for the scheduled retention workflow. `.github/workflows/purge-enquiries.yml` runs daily and deletes only enquiries older than 30 days when that value is configured; otherwise it exits successfully with a warning. Run it once manually after adding the value and verify its Actions log. This lets the cleanup run even if a Free Render service is asleep.
 8. Connect Render to the GitHub `main` branch and enable Auto-Deploy after checks. `.github/workflows/ci.yml` runs typecheck, tests, the framework doctor and production build on pushes and pull requests. It uses fake build-only database/auth values, not production secrets. Commit and push changes to deploy them:
 
    ```powershell
